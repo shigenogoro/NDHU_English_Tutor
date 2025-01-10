@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const LoginDialog = ({ onClose, onSwitchToRegister, onSwitchToReset }) => {
+const LoginDialog = ({ onClose, onSwitchToRegister, onSwitchToReset, onLoginSuccess }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -11,7 +11,8 @@ const LoginDialog = ({ onClose, onSwitchToRegister, onSwitchToReset }) => {
         // Mock authentication logic
         if (email === "test@example.com" && password === "password123") {
             alert("Login successful!");
-            onClose();
+            onLoginSuccess(); // Notify the parent component of a successful login
+            onClose(); // Close the dialog
         } else {
             setErrorMessage("Invalid email or password.");
         }
