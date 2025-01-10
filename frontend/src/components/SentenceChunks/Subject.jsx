@@ -12,4 +12,4 @@ const Subject = () => {
     )
 }
 
-export default StartingChunk;
+export default Subject;
