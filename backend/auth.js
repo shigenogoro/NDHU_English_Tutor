@@ -57,24 +57,30 @@ async function login(req, res, pool) {
   }
 }
 
-// Forgot password
-async function forgotPassword(req, res, pool) {
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
+// Reset password
+async function resetPassword(req, res, pool) {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required.' });
   }
 
   try {
-    const result = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const result = await pool.query(
+      'UPDATE users SET password = $2 WHERE email = $1 RETURNING id',
+      [email, hashedPassword]
+    );
+
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Email not found.' });
     }
 
-    // Placeholder for password reset logic (e.g., sending a reset email)
-    res.json({ message: 'Password reset instructions sent to your email.' });
+    res.status(200).json({ message: 'Password reset successfully.', userId: result.rows[0].id });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error.', error: error.message });
   }
 }
 
-export { register, login, forgotPassword };
+
+export { register, login, resetPassword };

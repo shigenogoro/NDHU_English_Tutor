@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import pg from 'pg'
-import {register, login, forgotPassword} from './auth.js';
+import {register, login, resetPassword} from './auth.js';
 import 'dotenv/config'
 
 const app = express();
@@ -48,7 +48,7 @@ async function initializeDatabase() {
  */
 app.post('/register', (req, res) => register(req, res, pool));
 app.post('/login', (req, res) => login(req, res, pool));
-app.post('/forgot-password', (req, res) => forgotPassword(req, res, pool));
+app.put('/reset-password', (req, res) => resetPassword(req, res, pool));
 
 /**
  * Define Routing
