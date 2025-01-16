@@ -12,11 +12,6 @@ const RegisterDialog = ({ onClose, onRegisterSuccess }) => {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        if (password !== confirmPassword) {
-        setErrorMessage("Passwords do not match.");
-        return;
-        }
-
         try {
             const response = await fetch(`${BASE_URL}/register`, {
                 method: "POST",
@@ -27,27 +22,12 @@ const RegisterDialog = ({ onClose, onRegisterSuccess }) => {
             const data = await response.json();
             console.log(data);
 
-            // Login Directly
-            try {
-                const response = await fetch(`${BASE_URL}/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    setErrorMessage(data.message);
-                    return;
-                }
-
-                localStorage.setItem("access_token", data.token);
-                localStorage.setItem("username", data.username);
-                onRegisterSuccess(data.username, data.role);
-
-            } catch (err) {
-                setErrorMessage("Something went wrong. Please try again later.");
+            if(!response.ok) {
+                setErrorMessage(data.message);
+                return;
             }
+
+            onRegisterSuccess();
 
         } catch (err) {
             setErrorMessage("Something went wrong. Please try again later.");
@@ -68,7 +48,7 @@ const RegisterDialog = ({ onClose, onRegisterSuccess }) => {
                 <h2 className="text-xl font-bold mb-4 text-center">Register</h2>
 
                 {errorMessage && (
-                    <div className="mb-4 text-red-500 text-sm">{errorMessage}</div>
+                    <div className="mb-4 text-red-500 font-bold text-sm text-center">{errorMessage}</div>
                 )}
                 <form onSubmit={handleRegister}>
                     <div className="mb-4">

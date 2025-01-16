@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Navbar = ({ onLoginClick, isLoggedIn }) => {
+const Navbar = ({ onLoginClick, isLoggedIn, onLogout }) => {
     const [userName, setUserName] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -13,9 +13,8 @@ const Navbar = ({ onLoginClick, isLoggedIn }) => {
     }, [isLoggedIn]); // Re-run effect when isLoggedIn changes
 
     const handleLogout = () => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("username");
-        localStorage.removeItem("role");
+        onLogout();
+        setDropdownOpen(false);
     };
 
     return (

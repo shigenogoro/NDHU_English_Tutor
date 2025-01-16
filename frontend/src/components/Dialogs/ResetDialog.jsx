@@ -1,22 +1,42 @@
 import React, { useState } from "react";
 
-const ResetDialog = ({ onClose }) => {
+const BASE_URL = "http://localhost:3000";
+
+const ResetDialog = ({ onClose, onResetSuccess }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const handleRegister = (e) => {
+    const handleReset = async (e) => {
         e.preventDefault();
 
+        // Check if passwords match
         if (password !== confirmPassword) {
-        setErrorMessage("Passwords do not match.");
-        return;
+            setErrorMessage("Passwords do not match.");
+            return;
         }
 
-        // Mock registration logic
-        alert("Registration successful!");
-        onClose();
+        // Reset password logic
+        try {
+            const response = await fetch(`${BASE_URL}/reset-password`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+
+            console.log(data);
+
+            if (!response.ok) {
+                setErrorMessage(data.message);
+                return;
+            }
+
+            onResetSuccess();
+        } catch (error) {   
+            setErrorMessage("An error occurred. Please try again.");
+        };
     };
 
     return (
@@ -33,9 +53,10 @@ const ResetDialog = ({ onClose }) => {
                 <h2 className="text-xl font-bold mb-4 text-center">Reset Password</h2>
 
                 {errorMessage && (
-                    <div className="mb-4 text-red-500 text-sm">{errorMessage}</div>
+                    <div className="mb-4 text-red-500 font-bold text-sm text-center">{errorMessage}</div>
                 )}
-                <form onSubmit={handleRegister}>
+
+                <form onSubmit={handleReset}>
                     <div className="mb-4">
                         <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
                         <input
