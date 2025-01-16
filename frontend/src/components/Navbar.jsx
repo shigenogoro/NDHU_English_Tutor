@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+const HOME_URL = "http://localhost:5173";
+
 const Navbar = ({ onLoginClick, isLoggedIn, onLogout }) => {
     const [userName, setUserName] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
@@ -20,7 +22,7 @@ const Navbar = ({ onLoginClick, isLoggedIn, onLogout }) => {
     return (
         <nav className="w-full flex flex-wrap dark:bg-zinc-800 justify-between sticky top-0 z-10">
             <div className="w-1/5 ml-6 my-4">
-                <h1 className="text-xl font-bold text-white">NDHU English Tutor</h1>
+                <h1 className="text-xl font-bold text-white"><a href={`${HOME_URL}`}>NDHU English Tutor</a></h1>
             </div>
             <div className="flex items-center ml-auto mr-6 relative">
                 {isLoggedIn ? (

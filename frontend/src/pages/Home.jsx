@@ -2,7 +2,7 @@ import React from "react";
 
 const Home = () => {
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="bg-gray-100">
             <div
                 className="min-h-[calc(100vh-3rem)] bg-cover bg-center flex items-center justify-center"
                 style={{
