@@ -1,20 +1,34 @@
 import React, { useState } from "react";
 
+const BASE_URL = "http://localhost:3000";
+
 const LoginDialog = ({ onClose, onSwitchToRegister, onSwitchToReset, onLoginSuccess }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
-        // Mock authentication logic
-        if (email === "test@example.com" && password === "password123") {
-            alert("Login successful!");
-            onLoginSuccess(); // Notify the parent component of a successful login
-            onClose(); // Close the dialog
-        } else {
-            setErrorMessage("Invalid email or password.");
+        try {
+            const response = await fetch(`${BASE_URL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                setErrorMessage(data.message);
+                return;
+            }
+
+            localStorage.setItem("access_token", data.token);
+            localStorage.setItem("username", data.username);
+            onLoginSuccess(data.username, data.role);
+
+        } catch(err) {
+            setErrorMessage("Something went wrong. Please try again later.");
         }
     };
 

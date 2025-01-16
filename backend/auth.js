@@ -9,7 +9,7 @@ function generateToken(userId) {
 
 // Register a new user
 async function register(req, res, pool) {
-  const { email, password } = req.body;
+  const { email, username, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required.' });
   }
@@ -17,9 +17,10 @@ async function register(req, res, pool) {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await pool.query(
-      'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id',
-      [email, hashedPassword]
+      'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING id',
+      [email, username, hashedPassword]
     );
+    
     res.status(201).json({ message: 'User registered successfully.', userId: result.rows[0].id });
   } catch (error) {
     if (error.code === '23505') {
@@ -38,7 +39,7 @@ async function login(req, res, pool) {
   }
 
   try {
-    const result = await pool.query('SELECT id, password FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT id, password, username, role FROM users WHERE email = $1', [email]);
     if (result.rows.length === 0) {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
@@ -51,7 +52,7 @@ async function login(req, res, pool) {
     }
 
     const token = generateToken(user.id);
-    res.json({ message: 'Login successful.', token });
+    res.json({ message: 'Login successful.', token, username: user.username, role: user.role });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error.', error: error.message });
   }

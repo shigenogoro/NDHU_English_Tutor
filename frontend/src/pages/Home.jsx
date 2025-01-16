@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import LoginDialog from "../components/Dialogs/LoginDialog";
+import RegisterDialog from "../components/Dialogs/RegisterDialog";
 
 const Home = () => {
-    const [isLoginDialogOpen, setLoginDialogOpen] = useState(false);
+    const [activeDialog, setActiveDialog] = useState(null); // Track the active dialog
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleOpenLoginDialog = () => {
-        setLoginDialogOpen(true);
+        setActiveDialog("login");
     };
 
-    const handleCloseLoginDialog = () => {
-        setLoginDialogOpen(false);
+    const handleOpenRegisterDialog = () => {
+        setActiveDialog("register");
+    };
+
+    const handleCloseDialog = () => {
+        setActiveDialog(null);
     };
 
     const handleLoginSuccess = (userName, role) => {
@@ -19,7 +24,7 @@ const Home = () => {
         setIsLoggedIn(true);
         localStorage.setItem("username", userName);
         localStorage.setItem("role", role);
-        setLoginDialogOpen(false);
+        handleCloseDialog();
     };
 
     return (
@@ -45,10 +50,19 @@ const Home = () => {
                 </div>
             </div>
 
-            {isLoginDialogOpen && (
+            {activeDialog === "login" && (
                 <LoginDialog
-                    onClose={handleCloseLoginDialog}
+                    onClose={handleCloseDialog}
                     onLoginSuccess={(userName, role) => handleLoginSuccess(userName, role)}
+                    onSwitchToRegister={handleOpenRegisterDialog}
+                />
+            )}
+
+            {activeDialog === "register" && (
+                <RegisterDialog
+                    onClose={handleCloseDialog}
+                    onRegisterSuccess={(userName, role) => handleLoginSuccess(userName, role)}
+                    onSwitchToLogin={handleOpenLoginDialog}
                 />
             )}
         </div>

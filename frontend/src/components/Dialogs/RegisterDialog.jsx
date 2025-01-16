@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 
-const RegisterDialog = ({ onClose }) => {
+const BASE_URL = "http://localhost:3000";
+
+const RegisterDialog = ({ onClose, onRegisterSuccess }) => {
     const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
@@ -14,9 +17,41 @@ const RegisterDialog = ({ onClose }) => {
         return;
         }
 
-        // Mock registration logic
-        alert("Registration successful!");
-        onClose();
+        try {
+            const response = await fetch(`${BASE_URL}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, username, password }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+            // Login Directly
+            try {
+                const response = await fetch(`${BASE_URL}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    setErrorMessage(data.message);
+                    return;
+                }
+
+                localStorage.setItem("access_token", data.token);
+                localStorage.setItem("username", data.username);
+                onRegisterSuccess(data.username, data.role);
+
+            } catch (err) {
+                setErrorMessage("Something went wrong. Please try again later.");
+            }
+
+        } catch (err) {
+            setErrorMessage("Something went wrong. Please try again later.");
+        }
     };
 
     return (
@@ -45,6 +80,18 @@ const RegisterDialog = ({ onClose }) => {
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full border rounded px-3 py-2"
                             placeholder="Enter your email"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium mb-1" htmlFor="email">Username</label>
+                        <input
+                            type="text"
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full border rounded px-3 py-2"
+                            placeholder="Enter your username"
                         />
                     </div>
 
