@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 const Footer = () => {
     const [isAdmin, setIsAdmin] = useState(false); // State to track if user is an admin
     
-    const BASE_URL = "http://localhost:3000";
+    const BASE_URL = "http://localhost:5173";
     
     useEffect(() => {
         // Access localStorage only in the client-side effect
-        const storedRole = localStorage.getItem("role"); // "false" for Admin
-        setIsAdmin(storedRole === "false"); // Set to true if role is "false"
+        const storedRole = localStorage.getItem("role"); // "true" for Admin
+        setIsAdmin(storedRole === "true");
     }, []);
 
     return (
