@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRoutes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import VerbAndSentencePatternPage from "./pages/VerbAndSentencePatternPage";
 import LoginDialog from "./components/Dialogs/LoginDialog";
@@ -11,7 +12,6 @@ import NotificationDialog from "./components/Dialogs/NotificationDialog";
 
 const App = () => {
     const [activeDialog, setActiveDialog] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
     const [notification, setNotification] = useState({
@@ -20,8 +20,11 @@ const App = () => {
         message: "",
     });
 
+    // Function to check if the user is logged in
+    const isLoggedIn = localStorage.getItem("access_token") !== null;
+
     useEffect(() => {
-        // Update user info on login/logout
+        // Update user info on mount or when authentication changes
         const storedUserName = localStorage.getItem("username");
         const storedRole = localStorage.getItem("role");
         setUserName(storedUserName || "");
@@ -34,7 +37,7 @@ const App = () => {
     const handleCloseDialog = () => setActiveDialog(null);
 
     const handleLoginSuccess = (userName, role) => {
-        setIsLoggedIn(true);
+        localStorage.setItem("access_token", "your-access-token"); // Store access token
         localStorage.setItem("username", userName);
         localStorage.setItem("role", role);
         handleCloseDialog();
@@ -72,12 +75,20 @@ const App = () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("username");
         localStorage.removeItem("role");
-        setIsLoggedIn(false);
+        setUserName("");
+        setIsAdmin(false);
     };
 
     const element = useRoutes([
         { path: "/", element: <Home /> },
-        { path: "/verb-and-sentence-pattern-page", element: <VerbAndSentencePatternPage /> },
+        {
+            path: "/verb-and-sentence-pattern-page",
+            element: (
+                <ProtectedRoute isAuthenticated={isLoggedIn}>
+                    <VerbAndSentencePatternPage />
+                </ProtectedRoute>
+            ),
+        },
     ]);
 
     return (
