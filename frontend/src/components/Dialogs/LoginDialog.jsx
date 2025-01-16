@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:3000/auth";
 
 const LoginDialog = ({ onClose, onSwitchToRegister, onSwitchToReset, onLoginSuccess }) => {
     const [email, setEmail] = useState("");

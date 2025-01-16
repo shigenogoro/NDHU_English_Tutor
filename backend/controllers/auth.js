@@ -1,6 +1,6 @@
-// authHandlers.js
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { pool } from '../config/database.js';
 
 // Utility function to generate JWT
 function generateToken(userId) {
@@ -8,7 +8,7 @@ function generateToken(userId) {
 }
 
 // Register a new user
-async function register(req, res, pool) {
+const register = async (req, res) => {
   const { email, username, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required.' });
@@ -32,8 +32,9 @@ async function register(req, res, pool) {
 }
 
 // Sign in
-async function login(req, res, pool) {
+const login = async (req, res) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required.' });
   }
@@ -59,7 +60,7 @@ async function login(req, res, pool) {
 }
 
 // Reset password
-async function resetPassword(req, res, pool) {
+const resetPassword = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required.' });
@@ -84,4 +85,8 @@ async function resetPassword(req, res, pool) {
 }
 
 
-export { register, login, resetPassword };
+export default { 
+    register, 
+    login, 
+    resetPassword 
+  };
