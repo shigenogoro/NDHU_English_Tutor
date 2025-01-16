@@ -9,7 +9,7 @@ const Navbar = ({ onLoginClick, isLoggedIn, onLogout }) => {
         const storedUserName = localStorage.getItem("username");
         const storedRole = localStorage.getItem("role");
         setUserName(storedUserName || "");
-        setIsAdmin(storedRole === "false"); // Update admin state
+        setIsAdmin(storedRole === 'true'); // Update admin state
     }, [isLoggedIn]); // Re-run effect when isLoggedIn changes
 
     const handleLogout = () => {
