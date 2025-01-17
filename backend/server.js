@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import userRouter from './routes/auth.js';
+import userAuthRouter from './routes/auth.js';
+import problemRouter from './routes/getProblem.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,7 +12,8 @@ const PORT = process.env.PORT || 3000;
  */
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/auth', userRouter)
+app.use('/auth', userAuthRouter)
+app.use('/problems', problemRouter);
 
 /**
  * Define Route for the root URL

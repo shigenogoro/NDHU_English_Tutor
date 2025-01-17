@@ -89,4 +89,4 @@ export default {
     register, 
     login, 
     resetPassword 
-  };
+};
