@@ -93,15 +93,40 @@ const VerbAndSentencePatternPage = () => {
   };
 
   const handleNextQuestion = () => {
-    if(!problemData || !answerSubmitted || currentEnglishChunkIndex < 5) return;
-
+    if (!problemData || !answerSubmitted) return;
+  
+    const englishChunks = [
+      problemData.english_subject,
+      problemData.english_chunk2,
+      problemData.english_verb,
+      problemData.english_chunk3,
+      problemData.english_object,
+      problemData.english_chunk4,
+    ];
+  
+    // Check if all English chunks are displayed or no more chunks are valid
+    const hasDisplayedAllEnglishChunks =
+      currentEnglishChunkIndex >= englishChunks.length - 1 ||
+      (currentEnglishChunkIndex === englishChunks.length - 2 &&
+        !problemData.english_object &&
+        !problemData.english_chunk4);
+  
+    if (!hasDisplayedAllEnglishChunks) return;
+  
+    // Reset states for the next question
     setProblemNumber((prev) => prev + 1);
     setCurrentEnglishChunkIndex(0);
     setCurrentChineseChunkIndex(0);
-    setDisplayedEnglish([problemData.english_chunk1]);
+    setDisplayedEnglish([]);
     setDisplayedChinese([]);
     setAnswerSubmitted(false);
     setShuffledAnswers([]);
+    setWrongMessage(""); // Clear any previous wrong messages
+  
+    // Fetch the next question's first English chunk
+    if (problemData.english_chunk1) {
+      setDisplayedEnglish([problemData.english_chunk1]);
+    }
   };
 
   const handleAnswerClick = (isCorrect) => {

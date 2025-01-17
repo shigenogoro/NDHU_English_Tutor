@@ -40,6 +40,7 @@ const createProblemsTable = async () => {
           english_chunk2 TEXT,
           english_verb TEXT NOT NULL,
           english_chunk3 TEXT,
+          english_chunk4 TEXT,
           english_object TEXT,
           chinese_chunk1 TEXT,
           chinese_subject TEXT,
@@ -67,34 +68,48 @@ const seedProblemsTable = async () => {
     problemsData.forEach((problem) => {
       const insertProblemsQuery = `
           INSERT INTO problems (
-            unit, number, correct_answer, wrong_answer,
-            english_chunk1, english_subject, english_chunk2,
-            english_verb, english_chunk3, english_object,
-            chinese_chunk1, chinese_subject, chinese_chunk2,
-            chinese_verb, chinese_chunk3, chinese_object, chinese_chunk4
+            unit, 
+            number, 
+            correct_answer, 
+            wrong_answer,
+            english_chunk1, 
+            english_subject, 
+            english_chunk2,
+            english_verb, 
+            english_chunk3, 
+            english_object, 
+            english_chunk4,
+            chinese_chunk1, 
+            chinese_subject, 
+            chinese_chunk2,
+            chinese_verb, 
+            chinese_chunk3, 
+            chinese_object, 
+            chinese_chunk4
           ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
           );
       `;
 
       const values = [
           problem.unit,
           problem.number,
-          problem['correct-answer'],
-          problem['wrong-answer'],
-          problem['english-chunk1'] || null,
-          problem['english-subject'] || null,
-          problem['english-chunk2'] || null,
-          problem['english-verb'] || null,
-          problem['english-chunk3'] || null,
-          problem['english-object'] || null,
-          problem['chinese-chunk1'] || null,
-          problem['chinese-subject'] || null,
-          problem['chinese-chunk2'] || null,
-          problem['chinese-verb'] || null,
-          problem['chinese-chunk3'] || null,
-          problem['chinese-object'] || null,
-          problem['chinese-chunk4'] || null
+          problem['correct_answer'],
+          problem['wrong_answer'],
+          problem['english_chunk1'] || null,
+          problem['english_subject'] || null,
+          problem['english_chunk2'] || null,
+          problem['english_verb'] || null,
+          problem['english_chunk3'] || null,
+          problem['english_object'] || null,
+          problem['english_chunk4'] || null,
+          problem['chinese_chunk1'] || null,
+          problem['chinese_subject'] || null,
+          problem['chinese_chunk2'] || null,
+          problem['chinese_verb'] || null,
+          problem['chinese_chunk3'] || null,
+          problem['chinese_object'] || null,
+          problem['chinese_chunk4'] || null
       ];
 
       pool.query(insertProblemsQuery, values, (err, res) => {

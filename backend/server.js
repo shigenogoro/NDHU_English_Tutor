@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import userAuthRouter from './routes/auth.js';
-import problemRouter from './routes/getProblem.js';
+import problemRouter from './routes/problems.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
